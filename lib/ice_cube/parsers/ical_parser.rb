@@ -44,7 +44,11 @@ module IceCube
         when 'COUNT'
           params[:count] = value.to_i
         when 'UNTIL'
-          params[:until] = TimeUtil.deserialize_time(value).utc
+          params[:until] = if value =~ /^\d{8}$/
+                             Date.parse(value).to_datetime.to_time
+                           else
+                             TimeUtil.deserialize_time(value)
+                           end.utc
         when 'WKST'
           params[:week_start] = TimeUtil.ical_day_to_symbol(value)
         when 'BYSECOND'
